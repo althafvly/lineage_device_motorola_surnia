@@ -7,3 +7,4 @@ ro.qc.sdk.audio.fluencetype=none
 
 # Display
 ro.sf.lcd_density=240
+debug.hwui.use_buffer_age=false
