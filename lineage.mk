@@ -19,6 +19,9 @@ $(call inherit-product, device/motorola/surnia/full_surnia.mk)
 TARGET_SCREEN_WIDTH := 540
 TARGET_SCREEN_HEIGHT := 960
 
+# Inherit some common LineageOS stuff.
+$(call inherit-product, vendor/lineage/config/common_mini_phone.mk)
+
 ## Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := surnia
 PRODUCT_NAME := lineage_surnia
