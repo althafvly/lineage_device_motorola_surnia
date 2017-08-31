@@ -27,6 +27,7 @@
    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <android-base/properties.h>
 #include <stdlib.h>
 #include <stdio.h>
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
@@ -35,8 +36,8 @@
 #include "vendor_init.h"
 #include "property_service.h"
 #include "log.h"
-#include "util.h"
-
+namespace android {
+namespace init {
 void gsm_properties(bool msim);
 void cdma_properties();
 
@@ -59,13 +60,13 @@ void vendor_load_properties()
     std::string platform;
     std::string radio;
 
-    platform = property_get("ro.board.platform");
+    platform = android::base::GetProperty("ro.board.platform","platform");
     if (platform != ANDROID_TARGET)
         return;
 
-    radio = property_get("ro.boot.radio");
-    carrier = property_get("ro.boot.carrier");
-    fsg = property_get("ro.boot.fsg-id");
+    radio = android::base::GetProperty("ro.boot.radio","radio");
+    carrier = android::base::GetProperty("ro.boot.carrier","carrier");
+    fsg = android::base::GetProperty("ro.boot.fsg-id","fsg");
 
     if (radio == "0x2") {
         /* XT1529 */
@@ -75,12 +76,12 @@ void vendor_load_properties()
         property_override("ro.build.product", "surnia_cdma");
         property_override("ro.build.description", "surnia_verizon-user 5.1 LPI23.29-17.5 5 release-keys");
         property_override("ro.build.fingerprint", "motorola/surnia_verizon/surnia_cdma:5.1/LPI23.29-17.5/5:user/release-keys");
-        property_set("ro.mot.build.customerid", "verizon");
-        property_set("ro.telephony.get_imsi_from_sim", "true");
-        property_set("ro.com.google.clientidbase.am", "android-verizon");
-        property_set("ro.com.google.clientidbase.ms", "android-verizon");
-        property_set("ro.com.google.clientidbase.yt", "android-verizon");
-        property_set("ro.cdma.data_retry_config", "max_retries=infinite,0,0,10000,10000,100000,10000,10000,10000,10000,140000,540000,960000");
+        android::base::SetProperty("ro.mot.build.customerid", "verizon");
+        android::base::SetProperty("ro.telephony.get_imsi_from_sim", "true");
+        android::base::SetProperty("ro.com.google.clientidbase.am", "android-verizon");
+        android::base::SetProperty("ro.com.google.clientidbase.ms", "android-verizon");
+        android::base::SetProperty("ro.com.google.clientidbase.yt", "android-verizon");
+        android::base::SetProperty("ro.cdma.data_retry_config", "max_retries=infinite,0,0,10000,10000,100000,10000,10000,10000,10000,140000,540000,960000");
     } else if (radio == "0x1") {
         /* XT1527 */
         gsm_properties(false);
@@ -89,7 +90,7 @@ void vendor_load_properties()
         property_override("ro.build.product", "surnia_umts");
         property_override("ro.build.description", "surnia_retus-user 5.0.2 LXI22.50-24.1 1 release-keys");
         property_override("ro.build.fingerprint", "motorola/surnia_retus/surnia_umts:5.0.2/LXI22.50-24.1/1:user/release-keys");
-        property_set("ro.mot.build.customerid", "retus");
+        android::base::SetProperty("ro.mot.build.customerid", "retus");
     } else if (radio == "0x3") {
         /* XT1526 */
         cdma_properties();
@@ -97,32 +98,32 @@ void vendor_load_properties()
             if (fsg == "boost") {
                 property_override("ro.build.description", "surnia_boost-user 5.0.2 LXI22.50-14.8 30 release-keys");
                 property_override("ro.build.fingerprint", "motorola/surnia_boost/surnia_cdma:5.0.2/LXI22.50-14.8/30:user/release-keys");
-	        property_set("ro.cdma.home.operator.numeric", "311870");
-	        property_set("ro.cdma.home.operator.alpha", "Boost Mobile");
+	        android::base::SetProperty("ro.cdma.home.operator.numeric", "311870");
+	        android::base::SetProperty("ro.cdma.home.operator.alpha", "Boost Mobile");
             } else {
                 property_override("ro.build.description", "surnia_sprint-user 5.0.2 LXI22.50-14.8 30 release-keys");
                 property_override("ro.build.fingerprint", "motorola/surnia_sprint/surnia_cdma:5.0.2/LXI22.50-14.8/30:user/release-keys");
             }
-            property_set("ro.fsg-id", "sprint");
-            property_set("ro.carrier", "sprint");
-            property_set("ro.mot.build.customerid ","sprint");
+            android::base::SetProperty("ro.fsg-id", "sprint");
+            android::base::SetProperty("ro.carrier", "sprint");
+            android::base::SetProperty("ro.mot.build.customerid ","sprint");
         } else {
             property_override("ro.build.description", "surnia_usc-user 5.0.2 LXI22.50-14.8 30 release-keys");
             property_override("ro.build.fingerprint", "motorola/surnia_usc/surnia_cdma:5.0.2/LXI22.50-14.8/30:user/release-keys");
-            property_set("ro.mot.build.customerid", "usc");
-            property_set("ro.cdma.home.operator.alpha", "U.S. Cellular");
-            property_set("ro.cdma.home.operator.numeric", "311580");
-            property_set("ro.fsg-id", "usc");
+            android::base::SetProperty("ro.mot.build.customerid", "usc");
+            android::base::SetProperty("ro.cdma.home.operator.alpha", "U.S. Cellular");
+            android::base::SetProperty("ro.cdma.home.operator.numeric", "311580");
+            android::base::SetProperty("ro.fsg-id", "usc");
         }
         property_override("ro.product.model", "XT1526");
         property_override("ro.product.device", "surnia_cdma");
         property_override("ro.build.product", "surnia_cdma");
-        property_set("persist.radio.0x9e_not_callname","1");
-        property_set("persist.radio.lifecalls", "0");
-        property_set("persist.radio.lifetimer", "0");
-        property_set("persist.radio.multisim.config", "");
-        property_set("ro.cdma.international.eri", "2,74,124,125,126,157,158,159,193,194,195,196,197,198,228,229,230,231,232,233,234,235");
-        property_set("ro.com.android.dataroaming","false");
+        android::base::SetProperty("persist.radio.0x9e_not_callname","1");
+        android::base::SetProperty("persist.radio.lifecalls", "0");
+        android::base::SetProperty("persist.radio.lifetimer", "0");
+        android::base::SetProperty("persist.radio.multisim.config", "");
+        android::base::SetProperty("ro.cdma.international.eri", "2,74,124,125,126,157,158,159,193,194,195,196,197,198,228,229,230,231,232,233,234,235");
+        android::base::SetProperty("ro.com.android.dataroaming","false");
     } else if (radio == "0x4") {
         /* XT1524 */
         gsm_properties(false);
@@ -131,7 +132,7 @@ void vendor_load_properties()
         property_override("ro.build.product", "surnia_umts");
         property_override("ro.build.description", "surnia_reteu-user 5.0.2 LXI22.50-24.1 2 release-keys");
         property_override("ro.build.fingerprint", "motorola/surnia_reteu/surnia_umts:5.0.2/LXI22.50-24.1/2:user/release-keys");
-        property_set("ro.mot.build.customerid", "reteuall");
+        android::base::SetProperty("ro.mot.build.customerid", "reteuall");
     } else if (radio == "0x6") {
         /* XT1523 */
         gsm_properties(true);
@@ -140,7 +141,7 @@ void vendor_load_properties()
         property_override("ro.build.product", "surnia_udstv");
         property_override("ro.build.description", "surnia_retbr_dstv-user 5.0.2 LXI22.50-24.1 3 release-keys");
         property_override("ro.build.fingerprint", "motorola/surnia_retbr_dstv/surnia_udstv:5.0.2/LXI22.50-24.1/3:user/release-keys");
-        property_set("ro.mot.build.customerid", "retbr");
+        android::base::SetProperty("ro.mot.build.customerid", "retbr");
     } else if (radio == "0x7") {
         /* XT1521 */
         gsm_properties(true);
@@ -149,7 +150,7 @@ void vendor_load_properties()
         property_override("ro.build.product", "surnia_uds");
         property_override("ro.build.description", "surnia_retasia_ds-user 5.0.2 LXI22.50-53.1 1 release-keys");
         property_override("ro.build.fingerprint", "motorola/surnia_retasia_ds/surnia_uds:5.0.2/LXI22.50-53.1/1:user/release-keys");
-        property_set("ro.mot.build.customerid", "retasiaall");
+        android::base::SetProperty("ro.mot.build.customerid", "retasiaall");
     } else if (radio == "0x8") {
         /* XT1514 */
         gsm_properties(true);
@@ -158,34 +159,37 @@ void vendor_load_properties()
         property_override("ro.build.product", "surnia_uds");
         property_override("ro.build.description", "surnia_retbr_ds-user 5.0.2 LXI22.50-24.1 1 release-keys");
         property_override("ro.build.fingerprint", "motorola/surnia_retbr_ds/surnia_uds:5.0.2/LXI22.50-24.1/1:user/release-keys");
-        property_set("ro.mot.build.customerid", "retbr");
+        android::base::SetProperty("ro.mot.build.customerid", "retbr");
     }
-    device = property_get("ro.product.device");
-    INFO("Found radio id: %s setting build properties for %s device\n", radio.c_str(), device.c_str());
+    device = android::base::GetProperty("ro.product.device","device");
+ //   INFO("Found radio id: %s setting build properties for %s device\n", radio.c_str(), device.c_str());
 }
 
 void cdma_properties()
 {
-    property_set("DEVICE_PROVISIONED","1");
-    property_set("gsm.sim.operator.iso-country", "US");
-    property_set("gsm.operator.iso-country", "US");
-    property_set("ril.subscription.types","NV,RUIM");
-    property_set("ro.telephony.default_cdma_sub", "0");
-    property_set("ro.product.locale.region", "US");
-    property_set("ro.telephony.default_network", "8");
-    property_set("telephony.lteOnCdmaDevice", "1");
+    android::base::SetProperty("DEVICE_PROVISIONED","1");
+    android::base::SetProperty("gsm.sim.operator.iso-country", "US");
+    android::base::SetProperty("gsm.operator.iso-country", "US");
+    android::base::SetProperty("ril.subscription.types","NV,RUIM");
+    android::base::SetProperty("ro.telephony.default_cdma_sub", "0");
+    android::base::SetProperty("ro.product.locale.region", "US");
+    android::base::SetProperty("ro.telephony.default_network", "8");
+    android::base::SetProperty("telephony.lteOnCdmaDevice", "1");
 }
 
 void gsm_properties(bool msim)
 {
-    property_set("telephony.lteOnGsmDevice", "1");
-    property_set("ro.telephony.default_network", "9");
+    android::base::SetProperty("telephony.lteOnGsmDevice", "1");
+    android::base::SetProperty("ro.telephony.default_network", "9");
     if (msim) {
-        property_set("persist.radio.dont_use_dsd", "true");
-        property_set("persist.radio.multisim.config", "dsds");
-        property_set("persist.radio.plmn_name_cmp", "1");
-        property_set("ro.telephony.ril.config", "simactivation");
+        android::base::SetProperty("persist.radio.dont_use_dsd", "true");
+        android::base::SetProperty("persist.radio.multisim.config", "dsds");
+        android::base::SetProperty("persist.radio.plmn_name_cmp", "1");
+        android::base::SetProperty("ro.telephony.ril.config", "simactivation");
     } else {
-        property_set("persist.radio.multisim.config", "");
+        android::base::SetProperty("persist.radio.multisim.config", "");
     }
 }
+}  // namespace init
+}  // namespace android
+
