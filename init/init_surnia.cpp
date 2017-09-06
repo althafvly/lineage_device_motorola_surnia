@@ -35,9 +35,7 @@
 
 #include "vendor_init.h"
 #include "property_service.h"
-#include "log.h"
-namespace android {
-namespace init {
+
 void gsm_properties(bool msim);
 void cdma_properties();
 
@@ -64,9 +62,9 @@ void vendor_load_properties()
     if (platform != ANDROID_TARGET)
         return;
 
-    radio = android::base::GetProperty("ro.boot.radio","radio");
-    carrier = android::base::GetProperty("ro.boot.carrier","carrier");
-    fsg = android::base::GetProperty("ro.boot.fsg-id","fsg");
+    radio = android::base::GetProperty("ro.boot.radio","");
+    carrier = android::base::GetProperty("ro.boot.carrier","");
+    fsg = android::base::GetProperty("ro.boot.fsg-id","");
 
     if (radio == "0x2") {
         /* XT1529 */
@@ -190,6 +188,3 @@ void gsm_properties(bool msim)
         property_set("persist.radio.multisim.config", "");
     }
 }
-}  // namespace init
-}  // namespace android
-
