@@ -20,11 +20,11 @@ TARGET_SCREEN_WIDTH := 540
 TARGET_SCREEN_HEIGHT := 960
 
 # Inherit some common LineageOS stuff.
-$(call inherit-product, vendor/xperience/config/common_mini_phone.mk)
+$(call inherit-product, vendor/validus/config/common_full_phone.mk)
 
 ## Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := surnia
-PRODUCT_NAME := xpe_surnia
+PRODUCT_NAME := validus_surnia
 PRODUCT_BRAND := Motorola
 PRODUCT_MANUFACTURER := Motorola
 PRODUCT_RELEASE_NAME := surnia
