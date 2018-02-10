@@ -64,6 +64,7 @@ void vendor_load_properties()
         return;
 
     radio = GetProperty("ro.boot.radio","");
+    device = GetProperty("ro.product.device","");
     carrier = GetProperty("ro.boot.carrier","");
     fsg = GetProperty("ro.boot.fsg-id","");
 
@@ -160,8 +161,6 @@ void vendor_load_properties()
         property_override("ro.build.fingerprint", "motorola/surnia_retbr_ds/surnia_uds:5.0.2/LXI22.50-24.1/1:user/release-keys");
         property_set("ro.mot.build.customerid", "retbr");
     }
-    device = GetProperty("ro.product.device","");
-    INFO("Found radio id: %s setting build properties for %s device\n", radio.c_str(), device.c_str());
 }
 
 void cdma_properties()
